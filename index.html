@@ -19,7 +19,7 @@
 
   #bgWrap{
     position:fixed; inset:0; z-index:1;
-    opacity:0; transition: opacity 1s ease;
+    opacity:0; transition: opacity .6s ease;
   }
   #bgWrap.show{ opacity:1; }
 
@@ -56,6 +56,7 @@
   }
   #trustBtn:hover{ background:#fff; color:#000; transform: scale(1.04); }
   #trustBtn.hidden{ display:none; }
+  #trustBtn:disabled{ opacity:.5; cursor:default; }
 </style>
 </head>
 <body>
@@ -67,27 +68,45 @@
 </div>
 
 <div id="audioWrap">
-  <iframe id="ytFrame"
-    src=""
-    frameborder="0"
-    allow="autoplay; encrypted-media">
-  </iframe>
+  <div id="ytPlayer"></div>
 </div>
 
 <div id="stage">
-  <button id="trustBtn">vo confia</button>
+  <button id="trustBtn" disabled>vo confia</button>
 </div>
 
+<script src="https://www.youtube.com/iframe_api"></script>
 <script>
   const btn = document.getElementById('trustBtn');
   const bgWrap = document.getElementById('bgWrap');
-  const frame = document.getElementById('ytFrame');
+  let player;
+
+  // Se carga el reproductor ya de entrada, pausado y mudo,
+  // para que al apretar el botón solo haya que pedirle "sonido + play"
+  // (eso el navegador SI lo respeta como gesto del usuario, en mobile también).
+  function onYouTubeIframeAPIReady(){
+    player = new YT.Player('ytPlayer', {
+      videoId: 'zvq9r6R6QAY', // Caramella Girls - Caramelldansen (Swedish Original, Official)
+      playerVars: { autoplay: 0, controls: 0, playsinline: 1, mute: 1 },
+      events: {
+        onReady: () => { btn.disabled = false; },
+        onStateChange: onPlayerStateChange
+      }
+    });
+  }
+
+  function onPlayerStateChange(e){
+    if (e.data === YT.PlayerState.PLAYING){
+      // el gif recién aparece cuando el audio efectivamente arrancó
+      bgWrap.classList.add('show');
+    }
+  }
 
   btn.addEventListener('click', () => {
-    // Audio en streaming vía YouTube (con sonido, ya hay un click de por medio)
-    frame.src = 'https://www.youtube.com/embed/zvq9r6R6QAY?autoplay=1&start=0&loop=1&playlist=zvq9r6R6QAY&controls=0';
-    bgWrap.classList.add('show');
     btn.classList.add('hidden');
+    player.unMute();
+    player.setVolume(100);
+    player.playVideo();
   });
 </script>
 
