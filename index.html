@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>vo confia</title>
+<style>
+  html, body{
+    margin:0; padding:0; width:100%; height:100%;
+    background:#000; overflow:hidden;
+  }
+  *{ box-sizing:border-box; }
+
+  #stage{
+    position:fixed; inset:0;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  #bgVideoWrap{
+    position:fixed; inset:0; z-index:1;
+    opacity:0; transition: opacity 1s ease;
+    pointer-events:none;
+  }
+  #bgVideoWrap.show{ opacity:1; }
+
+  /* video cubre toda la pantalla tipo object-fit:cover */
+  #bgVideoWrap iframe{
+    position:absolute; top:50%; left:50%;
+    width:100vw; height:56.25vw;      /* 16:9 */
+    min-height:100vh; min-width:177.78vh; /* 16:9 */
+    transform:translate(-50%,-50%);
+  }
+
+  #overlay{
+    position:fixed; inset:0; z-index:0; background:#000;
+  }
+
+  #trustBtn{
+    position:relative; z-index:2;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: clamp(1.1rem, 3vw, 1.6rem);
+    font-weight:700;
+    letter-spacing:.02em;
+    color:#fff;
+    background:transparent;
+    border: 2px solid #fff;
+    border-radius: 999px;
+    padding: 18px 44px;
+    cursor:pointer;
+    transition: background .25s ease, color .25s ease, transform .2s ease;
+  }
+  #trustBtn:hover{ background:#fff; color:#000; transform: scale(1.04); }
+  #trustBtn.hidden{ display:none; }
+</style>
+</head>
+<body>
+
+<div id="overlay"></div>
+
+<div id="bgVideoWrap">
+  <iframe id="ytFrame"
+    src=""
+    frameborder="0"
+    allow="autoplay; encrypted-media"
+    allowfullscreen>
+  </iframe>
+</div>
+
+<div id="stage">
+  <button id="trustBtn">vo confia</button>
+</div>
+
+<script>
+  const btn = document.getElementById('trustBtn');
+  const wrap = document.getElementById('bgVideoWrap');
+  const frame = document.getElementById('ytFrame');
+
+  btn.addEventListener('click', () => {
+    // Carga y reproduce el video (con sonido, ya que hay un click del usuario de por medio)
+    frame.src = 'https://www.youtube.com/embed/x57yIcRiRR4?autoplay=1&start=0&loop=1&playlist=x57yIcRiRR4&controls=0&modestbranding=1';
+    wrap.classList.add('show');
+    btn.classList.add('hidden');
+  });
+</script>
+
+</body>
+</html>
