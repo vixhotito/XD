@@ -14,29 +14,34 @@
   #stage{
     position:fixed; inset:0;
     display:flex; align-items:center; justify-content:center;
+    z-index:3;
   }
 
-  #bgVideoWrap{
+  #bgWrap{
     position:fixed; inset:0; z-index:1;
     opacity:0; transition: opacity 1s ease;
-    pointer-events:none;
   }
-  #bgVideoWrap.show{ opacity:1; }
+  #bgWrap.show{ opacity:1; }
 
-  /* video cubre toda la pantalla tipo object-fit:cover */
-  #bgVideoWrap iframe{
+  #bgGif{
     position:absolute; top:50%; left:50%;
-    width:100vw; height:56.25vw;      /* 16:9 */
-    min-height:100vh; min-width:177.78vh; /* 16:9 */
+    height:100%; width:auto;
+    min-width:100%;
     transform:translate(-50%,-50%);
+    object-fit:cover;
   }
 
   #overlay{
     position:fixed; inset:0; z-index:0; background:#000;
   }
 
+  /* reproductor de audio invisible (YouTube) */
+  #audioWrap{
+    position:fixed; width:1px; height:1px; overflow:hidden; opacity:0; pointer-events:none; z-index:0;
+  }
+
   #trustBtn{
-    position:relative; z-index:2;
+    position:relative; z-index:3;
     font-family: Arial, Helvetica, sans-serif;
     font-size: clamp(1.1rem, 3vw, 1.6rem);
     font-weight:700;
@@ -57,12 +62,15 @@
 
 <div id="overlay"></div>
 
-<div id="bgVideoWrap">
+<div id="bgWrap">
+  <img id="bgGif" src="assets/dance.gif" alt="">
+</div>
+
+<div id="audioWrap">
   <iframe id="ytFrame"
     src=""
     frameborder="0"
-    allow="autoplay; encrypted-media"
-    allowfullscreen>
+    allow="autoplay; encrypted-media">
   </iframe>
 </div>
 
@@ -72,13 +80,13 @@
 
 <script>
   const btn = document.getElementById('trustBtn');
-  const wrap = document.getElementById('bgVideoWrap');
+  const bgWrap = document.getElementById('bgWrap');
   const frame = document.getElementById('ytFrame');
 
   btn.addEventListener('click', () => {
-    // Carga y reproduce el video (con sonido, ya que hay un click del usuario de por medio)
-    frame.src = 'https://www.youtube.com/watch?v=PDJLvF1dUekautoplay=1&start=0&loop=1&playlist=x57yIcRiRR4&controls=0&modestbranding=1';
-    wrap.classList.add('show');
+    // Audio en streaming vía YouTube (con sonido, ya hay un click de por medio)
+    frame.src = 'https://www.youtube.com/embed/zvq9r6R6QAY?autoplay=1&start=0&loop=1&playlist=zvq9r6R6QAY&controls=0';
+    bgWrap.classList.add('show');
     btn.classList.add('hidden');
   });
 </script>
